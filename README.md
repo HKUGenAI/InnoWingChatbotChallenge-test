@@ -22,8 +22,6 @@ git clone https://github.com/HKUGenAI/InnoWingChatbotChallenge-test.git
 cd InnoWingChatbotChallenge-test
 ```
 
-***
-
 ## 🐍 Python Setup
 
 ### 1. Create and activate a virtual environment
