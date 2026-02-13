@@ -24,7 +24,7 @@ cd InnoWingChatbotChallenge-test
 
 ***
 
-# 🐍 Python Setup
+## 🐍 Python Setup
 
 ### 1. Create and activate a virtual environment
 
