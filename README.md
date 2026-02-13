@@ -55,7 +55,11 @@ python api.py
 ```
 
 You should see the reply to an example chat. Below are the details of the example messages:
+
 User: "Does Azure OpenAI support customer managed keys?"
+
 AI: "Yes, customer managed keys are supported by Azure OpenAI."
+
 User: "Do other Azure AI services support this too?"
+
 AI: ... (the answer you see)
