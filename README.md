@@ -26,7 +26,7 @@ cd InnoWingChatbotChallenge-test
 
 # 🐍 Python Setup
 
-### 1. Create a virtual environment
+### 1. Create and activate a virtual environment
 
 ```bash
 # macOS & Linux
@@ -35,41 +35,23 @@ source .venv/bin/activate
 
 # Windows
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+.venv\Scripts\activate
 ```
 
 ### 2. Install dependencies
 
 ```bash
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 ### 3. Set environment variables
 
-Copy the example template:
-
 ```bash
 cp .env.example .env
 ```
 
-Then edit `.env` and fill in your keys, e.g.:
-
-    OPENAI_API_KEY=your_key_here
-    MODEL=gpt-4o-mini
-
 ### 4. Run the chatbot
 
 ```bash
-python main.py
+python api.py
 ```
-
-If the project uses a web server:
-
-```bash
-python app.py
-```
-
-Open the printed local URL in your browser (commonly <http://localhost:8000>).
-
-***
