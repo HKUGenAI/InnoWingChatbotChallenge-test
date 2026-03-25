@@ -9,7 +9,7 @@ on:
 
 jobs:
   score:
-    runs-on: [self-hosted, gpu]
+    runs-on: [self-hosted, gpu] # Adjust to your runner labels
     steps:
       # checkout, setup, install
       - run: python full_score.py --output results.json

@@ -25,27 +25,27 @@ client = AzureOpenAI(
 )
 
 # ====================== BASIC RAG SETUP ======================
-def retrieve_documents(query: str, top_k: int = 3) -> list[str]:
+def retrieve_documents(query: str, top_k: int = 3) -> List[str]:
     """
-    Very basic keyword-overlap retrieval (no extra dependencies, no embeddings needed).
-    Students can later replace this with embeddings + FAISS or Azure AI Search.
+    Embedding-based retrieval using cosine similarity.
+    Assumes doc_embeddings and documents are already available.
     """
-    if not query:
+    if not query.strip():
         return documents[:top_k]
+
+    # 1. Generate embedding for the query
+    query_embedding = get_embedding(query)
+
+    # 2. Compute cosine similarity
+    # Normalize for cosine similarity
+    query_norm = query_embedding / np.linalg.norm(query_embedding)
+    doc_norms = doc_embeddings / np.linalg.norm(doc_embeddings, axis=1, keepdims=True)
     
-    query_lower = query.lower()
-    query_words = set(query_lower.split())
-    
-    scores = []
-    for doc in documents:
-        doc_lower = doc.lower()
-        doc_words = set(doc_lower.split())
-        overlap = len(query_words.intersection(doc_words))
-        score = overlap / len(query_words) if query_words else 0
-        scores.append(score)
-    
-    # Get indices of top-k most relevant documents
-    top_indices = sorted(range(len(documents)), key=lambda i: scores[i], reverse=True)[:top_k]
+    similarities = np.dot(doc_norms, query_norm)          # shape: (num_docs,)
+
+    # 3. Get top-k indices
+    top_indices = np.argsort(similarities)[::-1][:top_k]
+
     return [documents[i] for i in top_indices]
 
 
