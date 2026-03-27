@@ -24,7 +24,6 @@ def rag_answer(question: str) -> str:
     answer = ""
     return answer
 
-
 # ====================== PUBLIC API FUNCTION ======================
 def generate_rag_answers(questions: List[str]) -> List[str]:
     """
