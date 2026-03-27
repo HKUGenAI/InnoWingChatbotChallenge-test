@@ -17,7 +17,13 @@ API_Key = (
 if not API_Key:
     raise RuntimeError("Missing Azure OpenAI credentials. Set AZURE_OPENAI_API_KEY in .env or environment.")
 
-client = AzureOpenAI(
+embedding_client = AzureOpenAI(
+    azure_endpoint="https://api-iw.azure-api.net/sig-embedding/openai/deployments/text-embedding-3-small/embeddings?api-version=2024-10-21",
+    api_key=API_Key,
+    api_version="2024-10-21",
+)
+
+GPT_client = AzureOpenAI(
     azure_endpoint="https://api-iw.azure-api.net/sig-shared-jpeast/deployments/gpt-4o-mini/chat/completions?api-version=2025-01-01-preview",
     api_key=API_Key,
     api_version="2025-01-01-preview",
@@ -25,14 +31,14 @@ client = AzureOpenAI(
 
 # ====================== CHROMA DB SETUP ======================
 CHROMA_PATH = os.getenv("CHROMA_PATH") or "chroma_db/chroma_db"
-COLLECTION_NAME = "rag"
+COLLECTION_NAME = "Innowing_db"
 
 chroma_client = chromadb.PersistentClient(path=CHROMA_PATH)
 collection = chroma_client.get_collection(name=COLLECTION_NAME)
 
 # ====================== HELPER: GET EMBEDDING ======================
 def get_embedding(text: str) -> List[float]:
-    response = client.embeddings.create(
+    response = embedding_client.embeddings.create(
         input=text.replace("\n", " "),
         model=os.getenv("EMBEDDING_MODEL", "text-embedding-3-small"),
     )
@@ -105,10 +111,9 @@ def rag_answer(question: str) -> str:
         }
     ]
 
-    response = client.chat.completions.create(
+    response = GPT_client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=messages,
-        temperature=0.3,
+        messages=messages
     )
 
     return response.choices[0].message.content
@@ -132,7 +137,7 @@ def generate_rag_answers(questions: List[str]) -> List[str]:
         print(f"🤖 Answering: {question[:80]}{'...' if len(question) > 80 else ''}")
         answer = rag_answer(question)
         answers.append(answer)
-    return answers
+    return zip(questions, answers)
 
 
 if __name__ == "__main__":
@@ -141,6 +146,5 @@ if __name__ == "__main__":
         "What is InnoWings?",
         "Tell me about projects or SIGs."
     ]
-    answers = generate_rag_answers(test_questions)
-    for q, a in zip(test_questions, answers):
-        print(f"\nQ: {q}\nA: {a}\n")
+    result = generate_rag_answers(test_questions)
+    print(result)
